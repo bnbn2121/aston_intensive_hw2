@@ -40,11 +40,6 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return null;
-    }
-
-    @Override
     public User saveUser(User user) throws DAOException {
         validate(user);
         Transaction transaction = null;

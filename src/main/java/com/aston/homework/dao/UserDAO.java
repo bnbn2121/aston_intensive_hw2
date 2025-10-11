@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface UserDAO {
     Optional<User> findUserById(int id) throws DAOException;
-    List<User> getAllUsers();
     User saveUser(User user) throws DAOException;
     boolean updateUser(User user) throws DAOException;
     boolean deleteUser(int id) throws DAOException;
