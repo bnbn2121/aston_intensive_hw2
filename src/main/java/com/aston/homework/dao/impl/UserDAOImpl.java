@@ -33,13 +33,11 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    public Optional<User> findUserByFields(String name, String email, int age) throws DAOException {
+    public Optional<User> findUserByEmail(String email) throws DAOException {
         try (Session session = HibernateUtil.getSession()) {
-            String hql = "SELECT u FROM User u WHERE u.name = :name AND u.email = :email AND u.age = :age";
+            String hql = "SELECT u FROM User u WHERE u.email = :email";
             Query<User> query = session.createQuery(hql, User.class);
-            query.setParameter("name", name);
             query.setParameter("email", email);
-            query.setParameter("age", age);
             Optional<User> optionalUser = query.uniqueResultOptional();
             if (optionalUser.isPresent()) {
                 logger.info("user founded in DB with id={}", optionalUser.get().getId());
@@ -53,16 +51,19 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    public boolean existsByEmail(String email) throws DAOException {
+        return findUserByEmail(email).isPresent();
+    }
+
     @Override
     public User saveUser(User user) throws DAOException {
         validate(user);
         Transaction transaction = null;
+        if (existsByEmail(user.getEmail())) {
+            logger.info("saving user in DB is unavailable, such email exists");
+            throw new DAOException("saving is unavailable, such email exists");
+        }
         try (Session session = HibernateUtil.getSession()) {
-            Optional<User> foundedUser = findUserByFields(user.getName(), user.getEmail(), user.getAge());
-            if (foundedUser.isPresent()) {
-                logger.info("saving user in DB is unavailable, such user exists");
-                throw new DAOException("saving is unavailable, such user exists");
-            }
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
@@ -82,12 +83,19 @@ public class UserDAOImpl implements UserDAO {
         validate(user);
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSession()) {
+            transaction = session.beginTransaction();
             User userFromDB = session.find(User.class, user.getId());
             if (userFromDB == null) {
                 logger.info("user is not founded in DB");
                 throw new DAOException("user not found");
             }
-            transaction = session.beginTransaction();
+            if(!user.getEmail().equals(userFromDB.getEmail())) {
+                Optional<User> optionalUserCheckedEmail = findUserByEmail(user.getEmail());
+                if(optionalUserCheckedEmail.isPresent()) {
+                    logger.info("this email already used");
+                    throw new DAOException("this email already used");
+                }
+            }
             userFromDB.setName(user.getName());
             userFromDB.setEmail(user.getEmail());
             userFromDB.setAge(user.getAge());

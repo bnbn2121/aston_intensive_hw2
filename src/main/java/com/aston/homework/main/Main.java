@@ -18,6 +18,5 @@ public class Main {
             logger.error("Error in application", e);
             System.exit(1);
         }
-
     }
 }
