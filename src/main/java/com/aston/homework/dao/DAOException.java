@@ -11,15 +11,13 @@ public class DAOException extends Exception {
 
     public DAOException(String message) {
         super(message);
-        logger.error("DAOException: {}", message, this);
     }
 
     public DAOException(String message, Throwable cause) {
         super(message, cause);
-        logger.error(message, cause);
     }
 
     public DAOException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 }

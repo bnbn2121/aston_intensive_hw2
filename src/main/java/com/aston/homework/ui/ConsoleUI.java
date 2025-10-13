@@ -81,7 +81,7 @@ public class ConsoleUI {
         String newEmail = ConsoleUtil.userStringInput("Set new user email:");
         int newAge = ConsoleUtil.userIntInput("Set new user age:", 0, 130);
         User updatedUser = controller.updateUserById(id, newName, newEmail, newAge);
-        return "Success! User data is updated:/n" + updatedUser.toString();
+        return "Success! User data is updated:\n" + updatedUser.toString();
     }
 
     private String exitApp() {

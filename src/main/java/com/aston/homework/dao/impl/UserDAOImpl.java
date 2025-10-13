@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
