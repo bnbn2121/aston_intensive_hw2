@@ -1,10 +1,6 @@
 package com.aston.homework.dao;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DAOException extends Exception {
-    private static Logger logger = LoggerFactory.getLogger(DAOException.class);
     public DAOException() {
         super();
     }

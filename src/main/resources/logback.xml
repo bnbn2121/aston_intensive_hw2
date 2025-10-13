@@ -30,4 +30,8 @@
         <appender-ref ref="FILE"/>
     </logger>
 
+    <logger name="com.aston.homework" level="Trace" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
 </configuration>

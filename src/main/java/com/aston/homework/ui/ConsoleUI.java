@@ -4,16 +4,20 @@ import com.aston.homework.controller.ControllerException;
 import com.aston.homework.controller.ControllerImpl;
 import com.aston.homework.entity.User;
 import com.aston.homework.ui.util.ConsoleUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConsoleUI {
     private ControllerImpl controller;
     private boolean isExit = false;
+    private static final Logger logger = LoggerFactory.getLogger(ConsoleUI.class);
 
     public ConsoleUI(ControllerImpl controller) {
         this.controller = controller;
     }
 
     public void runMenu() {
+        logger.info("starting app");
         while (!isExit) {
             mainMenu();
         }
@@ -38,6 +42,7 @@ public class ConsoleUI {
         System.out.println();
         System.out.println(response);
         System.out.println();
+        logger.debug(response);
     }
 
     private void showMenu() {
@@ -86,6 +91,7 @@ public class ConsoleUI {
 
     private String exitApp() {
         isExit = true;
+        logger.info("finishing app");
         return "Application is finished";
     }
 }

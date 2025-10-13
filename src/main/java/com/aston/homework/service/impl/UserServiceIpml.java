@@ -5,8 +5,11 @@ import com.aston.homework.dao.UserDAO;
 import com.aston.homework.entity.User;
 import com.aston.homework.service.UserService;
 import com.aston.homework.service.UserServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserServiceIpml implements UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceIpml.class);
     private UserDAO userDAO;
 
     public UserServiceIpml(UserDAO userDAO) {
@@ -51,20 +54,29 @@ public class UserServiceIpml implements UserService {
     }
 
     public void validateUserData(String name, String email, int age) throws UserServiceException {
+        String message = null;
         if (name == null || name.isBlank()) {
-            throw new UserServiceException("user name cannot be empty");
+            message = "user name cannot be empty";
+            logger.info("validation unsuccess: {}", message);
+            throw new UserServiceException(message);
         }
 
         if (email == null || email.isBlank()) {
-            throw new UserServiceException("email cannot be empty");
+            message = "email cannot be empty";
+            logger.info("validation unsuccess: {}", message);
+            throw new UserServiceException(message);
         } else if (!email.contains("@")) {
-            throw new UserServiceException("email must comtains \"@\"");
+            message = "email must contains \"@\"";
+            logger.info("validation unsuccess: {}", message);
+            throw new UserServiceException(message);
         }
 
         int minAge = 0;
         int maxAge = 130;
         if (age < minAge || age > maxAge) {
-            throw new UserServiceException("age must be between %d and %d".formatted(minAge, maxAge));
+            message = "age must be between %d and %d".formatted(minAge, maxAge);
+            logger.info("validation unsuccess: {}", message);
+            throw new UserServiceException(message);
         }
     }
 }
