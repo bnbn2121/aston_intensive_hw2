@@ -12,34 +12,31 @@ public class ControllerImpl {
         this.userService = userService;
     }
 
-    public String createAndSaveNewUser(String name, String email, int age) {
+    public User createAndSaveNewUser(String name, String email, int age) throws ControllerException {
         try {
             User newUser = userService.createUser(name, email, age);
-            userService.addUser(newUser);
-            return "Success! User added with id = %d".formatted(newUser.getId());
+            return userService.addUser(newUser);
         } catch (UserServiceException e) {
-            return e.getMessage();
+            throw new ControllerException(e);
         }
     }
 
-    public String getUserById(int id) {
+    public User getUserById(int id) throws ControllerException {
         try {
-            User user = userService.getUserById(id);
-            return user.toString();
+            return userService.getUserById(id);
         } catch (UserServiceException e) {
-            return e.getMessage();
+            throw new ControllerException(e);
         }
     }
 
-    public String removeUserById(int id) {
+    public boolean removeUserById(int id) throws ControllerException {
         try {
-            userService.deleteUser(id);
-            return "Success! User with id = %d is deleted".formatted(id);
+            return userService.deleteUser(id);
         } catch (UserServiceException e) {
-            return e.getMessage();
+            throw new ControllerException(e);
         }
     }
-    public String updateUserById(int id, String name, String email, int age) {
+    public User updateUserById(int id, String name, String email, int age) throws ControllerException {
         try {
             userService.validateUserData(name, email, age);
 
@@ -48,9 +45,9 @@ public class ControllerImpl {
             userForUpdate.setEmail(email);
             userForUpdate.setAge(age);
             userService.updateUser(userForUpdate);
-            return "Success! User data is updated";
+            return userForUpdate;
         } catch (UserServiceException e) {
-            return e.getMessage();
+            throw new ControllerException(e);
         }
     }
 }
