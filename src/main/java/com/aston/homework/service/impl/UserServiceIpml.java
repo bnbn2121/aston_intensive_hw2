@@ -34,10 +34,15 @@ public class UserServiceIpml implements UserService {
         }
     }
 
-    public boolean updateUser(User user) throws UserServiceException {
-        logger.info("Updating user with id={}", user.getId());
+    public boolean updateUserById(int id, String newName, String newEmail, int newAge) throws UserServiceException {
+        logger.info("Updating user with id={}", id);
+        validateUserData(newName, newEmail, newAge);
         try {
-            return userDAO.updateUser(user);
+            User userForUpdate = userDAO.findUserById(id).orElseThrow(() -> new UserServiceException("user with id=%d not found".formatted(id)));
+            userForUpdate.setName(newName);
+            userForUpdate.setEmail(newEmail);
+            userForUpdate.setAge(newAge);
+            return userDAO.updateUser(userForUpdate);
         } catch (DAOException e) {
             throw new UserServiceException(e);
         }
@@ -68,11 +73,11 @@ public class UserServiceIpml implements UserService {
 
         if (email == null || email.isBlank()) {
             message = "email cannot be empty";
-            logger.info("validation unsuccess: {}", message);
+            logger.info("Service validation unsuccess: {}", message);
             throw new UserServiceException(message);
         } else if (!email.contains("@")) {
             message = "email must contains \"@\"";
-            logger.info("validation unsuccess: {}", message);
+            logger.info("Service validation unsuccess: {}", message);
             throw new UserServiceException(message);
         }
 
@@ -80,7 +85,7 @@ public class UserServiceIpml implements UserService {
         int maxAge = 130;
         if (age < minAge || age > maxAge) {
             message = "age must be between %d and %d".formatted(minAge, maxAge);
-            logger.info("validation unsuccess: {}", message);
+            logger.info("Service validation unsuccess: {}", message);
             throw new UserServiceException(message);
         }
     }

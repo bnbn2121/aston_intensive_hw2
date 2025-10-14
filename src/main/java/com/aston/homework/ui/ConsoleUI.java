@@ -81,19 +81,13 @@ public class ConsoleUI {
 
     private String updateUserById() throws UserServiceException {
         int id = ConsoleUtil.userIntInput("Set user id to update:", 0, 1000);
-        User userForUpdate = userService.getUserById(id);
-        System.out.println(userForUpdate);
+        System.out.println(userService.getUserById(id));
         System.out.println("Update user data please");
         String newName = ConsoleUtil.userStringInput("Set new user name:");
         String newEmail = ConsoleUtil.userStringInput("Set new user email:");
         int newAge = ConsoleUtil.userIntInput("Set new user age:", 0, 130);
-        userService.validateUserData(newName, newEmail, newAge);
-
-        userForUpdate.setName(newName);
-        userForUpdate.setEmail(newEmail);
-        userForUpdate.setAge(newAge);
-        userService.updateUser(userForUpdate);
-        return "Success! User data is updated:\n" + userForUpdate.toString();
+        userService.updateUserById(id, newName, newEmail, newAge);
+        return "Success! User with id=%d is updated".formatted(id);
     }
 
     private String exitApp() {

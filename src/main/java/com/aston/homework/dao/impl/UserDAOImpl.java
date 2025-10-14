@@ -4,6 +4,7 @@ import com.aston.homework.dao.DAOException;
 import com.aston.homework.dao.UserDAO;
 import com.aston.homework.dao.util.HibernateUtil;
 import com.aston.homework.entity.User;
+import com.aston.homework.service.UserServiceException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -143,17 +144,21 @@ public class UserDAOImpl implements UserDAO {
     }
 
     private void validate(User user) throws DAOException {
+        String message;
         if (user == null) {
-            logger.debug("user cannot be null");
-            throw new DAOException("user cannot be null");
+            message = "user cannot be null";
+            logger.debug("DAO validation unsuccess: {}", message);
+            throw new DAOException(message);
         }
         if (user.getName() == null) {
-            logger.debug("user name cannot be null");
-            throw new DAOException("user name cannot be null");
+            message = "user name cannot be null";
+            logger.debug("DAO validation unsuccess: {}", message);
+            throw new DAOException(message);
         }
         if (user.getEmail() == null) {
-            logger.debug("user email cannot be null");
-            throw new DAOException("user email cannot be null");
+            message = "user email cannot be null";
+            logger.debug("DAO validation unsuccess: {}", message);
+            throw new DAOException(message);
         }
     }
 }
