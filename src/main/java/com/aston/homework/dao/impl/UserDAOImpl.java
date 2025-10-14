@@ -4,7 +4,6 @@ import com.aston.homework.dao.DAOException;
 import com.aston.homework.dao.UserDAO;
 import com.aston.homework.dao.util.HibernateUtil;
 import com.aston.homework.entity.User;
-import com.aston.homework.service.UserServiceException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -38,7 +37,7 @@ public class UserDAOImpl implements UserDAO {
         try (Session session = HibernateUtil.getSession()) {
             String hql = "SELECT u FROM User u WHERE u.email = :email";
             Query<User> query = session.createQuery(hql, User.class);
-            query.setParameter("email", email);
+            query.setParameter("email", email.toLowerCase());
             Optional<User> optionalUser = query.uniqueResultOptional();
             if (optionalUser.isPresent()) {
                 logger.info("user founded in DB with id={}", optionalUser.get().getId());
@@ -59,6 +58,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User saveUser(User user) throws DAOException {
         validate(user);
+        normalizeEmail(user);
         Transaction transaction = null;
         if (existsByEmail(user.getEmail())) {
             logger.info("saving user in DB is unavailable, such email exists");
@@ -82,6 +82,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean updateUser(User user) throws DAOException {
         validate(user);
+        normalizeEmail(user);
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSession()) {
             transaction = session.beginTransaction();
@@ -159,6 +160,12 @@ public class UserDAOImpl implements UserDAO {
             message = "user email cannot be null";
             logger.debug("DAO validation unsuccess: {}", message);
             throw new DAOException(message);
+        }
+    }
+
+    private void normalizeEmail(User user) {
+        if (user != null) {
+            user.setEmail(user.getEmail().toLowerCase());
         }
     }
 }
