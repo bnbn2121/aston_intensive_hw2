@@ -17,6 +17,7 @@ public class UserServiceIpml implements UserService {
     }
 
     public User getUserById(int id) throws UserServiceException {
+        logger.info("Finding user by id: {}", id);
         try {
             return userDAO.findUserById(id).orElseThrow(() -> new UserServiceException("user not found"));
         } catch (DAOException e) {
@@ -25,6 +26,7 @@ public class UserServiceIpml implements UserService {
     }
 
     public User addUser(User user) throws UserServiceException {
+        logger.info("Saving new user");
         try {
             return userDAO.saveUser(user);
         } catch (DAOException e) {
@@ -33,6 +35,7 @@ public class UserServiceIpml implements UserService {
     }
 
     public boolean updateUser(User user) throws UserServiceException {
+        logger.info("Updating user with id={}", user.getId());
         try {
             return userDAO.updateUser(user);
         } catch (DAOException e) {
@@ -41,6 +44,7 @@ public class UserServiceIpml implements UserService {
     }
 
     public boolean deleteUser(int id) throws UserServiceException {
+        logger.info("Deleting user with id={}", id);
         try {
             return userDAO.deleteUser(id);
         } catch (DAOException e) {
@@ -49,6 +53,7 @@ public class UserServiceIpml implements UserService {
     }
 
     public User createUser(String name, String email, int age) throws UserServiceException {
+        logger.info("Creating new user with name={}, email={}, age={}", name, email, age);
         validateUserData(name, email, age);
         return new User(name, email, age);
     }

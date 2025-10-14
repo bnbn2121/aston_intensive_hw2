@@ -1,19 +1,19 @@
 package com.aston.homework.ui;
 
-import com.aston.homework.controller.ControllerException;
-import com.aston.homework.controller.ControllerImpl;
 import com.aston.homework.entity.User;
+import com.aston.homework.service.UserService;
+import com.aston.homework.service.UserServiceException;
 import com.aston.homework.ui.util.ConsoleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConsoleUI {
-    private ControllerImpl controller;
+    private UserService userService;
     private boolean isExit = false;
     private static final Logger logger = LoggerFactory.getLogger(ConsoleUI.class);
 
-    public ConsoleUI(ControllerImpl controller) {
-        this.controller = controller;
+    public ConsoleUI(UserService userService) {
+        this.userService = userService;
     }
 
     public void runMenu() {
@@ -36,7 +36,7 @@ public class ConsoleUI {
                 case 0 -> exitApp();
                 default -> null;
             };
-        } catch (ControllerException e) {
+        } catch (UserServiceException e) {
             response = e.getMessage();
         }
         System.out.println();
@@ -55,38 +55,45 @@ public class ConsoleUI {
         System.out.print("Your choice: ");
     }
 
-    private String addNewUser() throws ControllerException {
+    private String addNewUser() throws UserServiceException {
         String name = ConsoleUtil.userStringInput("Set user name:");
         String email = ConsoleUtil.userStringInput("Set user email:");
         int age = ConsoleUtil.userIntInput("Set user age:", 0, 130);
-        User newUser = controller.createAndSaveNewUser(name, email, age);
+        User newUser = userService.createUser(name, email, age);
+        userService.addUser(newUser);
         return "Success! User added with id = %d".formatted(newUser.getId());
     }
 
-    private String showUserById() throws ControllerException {
+    private String showUserById() throws UserServiceException {
         int id = ConsoleUtil.userIntInput("Set user id:", 0, 1000);
-        User user = controller.getUserById(id);
+        User user = userService.getUserById(id);
         return user.toString();
     }
 
-    private String removeUserById() throws ControllerException {
+    private String removeUserById() throws UserServiceException {
         int id = ConsoleUtil.userIntInput("Set user id to remove:", 0, 1000);
-        if (controller.removeUserById(id)) {
+        if (userService.deleteUser(id)) {
             return "Success! User with id = %d is deleted".formatted(id);
         }
         return "The operation was unsuccessful";
 
     }
 
-    private String updateUserById() throws ControllerException {
+    private String updateUserById() throws UserServiceException {
         int id = ConsoleUtil.userIntInput("Set user id to update:", 0, 1000);
-        System.out.println(controller.getUserById(id));
+        User userForUpdate = userService.getUserById(id);
+        System.out.println(userForUpdate);
         System.out.println("Update user data please");
         String newName = ConsoleUtil.userStringInput("Set new user name:");
         String newEmail = ConsoleUtil.userStringInput("Set new user email:");
         int newAge = ConsoleUtil.userIntInput("Set new user age:", 0, 130);
-        User updatedUser = controller.updateUserById(id, newName, newEmail, newAge);
-        return "Success! User data is updated:\n" + updatedUser.toString();
+        userService.validateUserData(newName, newEmail, newAge);
+
+        userForUpdate.setName(newName);
+        userForUpdate.setEmail(newEmail);
+        userForUpdate.setAge(newAge);
+        userService.updateUser(userForUpdate);
+        return "Success! User data is updated:\n" + userForUpdate.toString();
     }
 
     private String exitApp() {
