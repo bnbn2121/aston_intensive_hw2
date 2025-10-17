@@ -2,10 +2,10 @@ package com.aston.homework.dao.impl;
 
 import com.aston.homework.dao.DAOException;
 import com.aston.homework.dao.UserDAO;
-import com.aston.homework.dao.util.HibernateUtil;
 import com.aston.homework.entity.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -15,10 +15,15 @@ import java.util.Optional;
 
 public class UserDAOImpl implements UserDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
+    private final SessionFactory sessionFactory;
+
+    public UserDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public Optional<User> findUserById(int id) throws DAOException {
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             User user = session.find(User.class, id);
             if (user == null) {
                 logger.info("user is not founded in DB");
@@ -34,7 +39,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Optional<User> findUserByEmail(String email) throws DAOException {
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             String hql = "SELECT u FROM User u WHERE u.email = :email";
             Query<User> query = session.createQuery(hql, User.class);
             query.setParameter("email", email.toLowerCase());
@@ -59,7 +64,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User saveUser(User user) throws DAOException {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
@@ -77,7 +82,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean updateUser(User user) throws DAOException {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             User userFromDB = session.find(User.class, user.getId());
             userFromDB.setName(user.getName());
@@ -98,11 +103,12 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean deleteUser(int id) throws DAOException {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             User userFromDB = session.find(User.class, id);
             if (userFromDB == null) {
+                transaction.rollback();
                 logger.info("user is not founded in DB");
                 throw new DAOException("user not found");
             }
