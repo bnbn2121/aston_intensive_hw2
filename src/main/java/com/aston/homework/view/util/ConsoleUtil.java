@@ -1,4 +1,4 @@
-package com.aston.homework.ui.util;
+package com.aston.homework.view.util;
 
 import java.util.Scanner;
 

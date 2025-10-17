@@ -1,8 +1,8 @@
-package com.aston.homework.main;
+package com.aston.homework;
 
 import com.aston.homework.dao.impl.UserDAOImpl;
 import com.aston.homework.service.impl.UserServiceIpml;
-import com.aston.homework.ui.ConsoleUI;
+import com.aston.homework.view.ConsoleView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            ConsoleUI consoleUI = new ConsoleUI(new UserServiceIpml(new UserDAOImpl()));
-            consoleUI.runMenu();
+            ConsoleView consoleView = new ConsoleView(new UserServiceIpml(new UserDAOImpl()));
+            consoleView.runMenu();
         } catch (Exception e) {
             logger.error("Error in application", e);
             System.exit(1);

@@ -1,18 +1,18 @@
-package com.aston.homework.ui;
+package com.aston.homework.view;
 
 import com.aston.homework.entity.User;
 import com.aston.homework.service.UserService;
 import com.aston.homework.service.UserServiceException;
-import com.aston.homework.ui.util.ConsoleUtil;
+import com.aston.homework.view.util.ConsoleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsoleUI {
+public class ConsoleView {
     private UserService userService;
     private boolean isExit = false;
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleUI.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConsoleView.class);
 
-    public ConsoleUI(UserService userService) {
+    public ConsoleView(UserService userService) {
         this.userService = userService;
     }
 

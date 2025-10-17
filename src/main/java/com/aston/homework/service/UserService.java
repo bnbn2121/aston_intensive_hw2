@@ -9,5 +9,4 @@ public interface UserService {
     boolean updateUserById(int id, String name, String email, int age) throws UserServiceException;
     boolean deleteUser(int id) throws UserServiceException;
     User createUser(String name, String email, int age) throws UserServiceException;
-    void validateUserData(String name, String email, int age) throws UserServiceException;
 }
