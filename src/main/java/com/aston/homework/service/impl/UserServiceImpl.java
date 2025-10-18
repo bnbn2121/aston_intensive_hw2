@@ -9,12 +9,12 @@ import com.aston.homework.service.UserValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserServiceIpml implements UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceIpml.class);
+public class UserServiceImpl implements UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private UserDAO userDAO;
     private final UserValidator userValidator = new UserValidator();
 
-    public UserServiceIpml(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 

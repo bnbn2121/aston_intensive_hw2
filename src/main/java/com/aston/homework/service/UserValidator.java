@@ -1,12 +1,15 @@
 package com.aston.homework.service;
 
 import com.aston.homework.entity.User;
-import com.aston.homework.service.impl.UserServiceIpml;
+import com.aston.homework.service.impl.UserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserValidator {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceIpml.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final int MIN_AGE = 0;
+    private static final int MAX_AGE = 130;
+
 
     public void validateData(String name, String email, int age) throws UserServiceException {
         String message = null;
@@ -26,10 +29,8 @@ public class UserValidator {
             throw new UserServiceException(message);
         }
 
-        int minAge = 0;
-        int maxAge = 130;
-        if (age < minAge || age > maxAge) {
-            message = "age must be between %d and %d".formatted(minAge, maxAge);
+        if (age < MIN_AGE || age > MAX_AGE) {
+            message = "age must be between %d and %d".formatted(MIN_AGE, MAX_AGE);
             logger.info("validation unsuccess: {}", message);
             throw new UserServiceException(message);
         }
@@ -53,10 +54,8 @@ public class UserValidator {
             throw new UserServiceException(message);
         }
 
-        int minAge = 0;
-        int maxAge = 130;
-        if (user.getAge() < minAge || user.getAge() > maxAge) {
-            message = "age must be between %d and %d".formatted(minAge, maxAge);
+        if (user.getAge() < MIN_AGE || user.getAge() > MAX_AGE) {
+            message = "age must be between %d and %d".formatted(MIN_AGE, MAX_AGE);
             logger.info("validation unsuccess: {}", message);
             throw new UserServiceException(message);
         }

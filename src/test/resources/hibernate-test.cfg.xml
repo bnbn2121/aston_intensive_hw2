@@ -7,7 +7,7 @@
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
 
         <mapping class="com.aston.homework.entity.User"/>
     </session-factory>
