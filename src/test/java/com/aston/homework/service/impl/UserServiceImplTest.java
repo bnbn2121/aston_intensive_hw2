@@ -29,6 +29,23 @@ public class UserServiceImplTest {
     }
 
     @Test
+    void shouldCreateUser() throws Exception {
+        // Given
+        String name = "testUser";
+        String email = "test@mail.ru";
+        int age = 25;
+
+        // When
+        User user = userService.createUser(name, email, age);
+
+        // Then
+        assertNotNull(user);
+        assertEquals(name, user.getName());
+        assertEquals(email, user.getEmail());
+        assertEquals(25, user.getAge());
+    }
+
+    @Test
     void shouldGetUserByExistsId() throws Exception {
         // Given
         int userId = 1;

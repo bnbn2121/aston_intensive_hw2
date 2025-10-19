@@ -50,7 +50,8 @@ public class UserServiceImpl implements UserService {
         newEmail = userValidator.normalizeEmail(newEmail);
 
         try {
-            User userForUpdate = userDAO.findUserById(id).orElseThrow(() -> new UserServiceException("user with id=%d not found".formatted(id)));
+            User userForUpdate = userDAO.findUserById(id).orElseThrow(() ->
+                    new UserServiceException("user with id=%d not found".formatted(id)));
             if(!newEmail.equals(userForUpdate.getEmail()) && userDAO.existsByEmail(newEmail)) {
                 logger.info("this email already used");
                 throw new UserServiceException("this email already used");

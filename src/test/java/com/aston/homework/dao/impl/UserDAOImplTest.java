@@ -141,6 +141,31 @@ public class UserDAOImplTest {
     }
 
     @Test
+    void shouldDeleteUser() throws Exception{
+        // Given
+        User presavedUser = presaveUserInDB();
+
+        // When
+        Optional<User> foundUserBeforeDelete = userDAO.findUserById(presavedUser.getId());
+        boolean isUserDeleted = userDAO.deleteUser(presavedUser.getId());
+        Optional<User> foundUserAfterDelete = userDAO.findUserById(presavedUser.getId());
+
+        // Then
+        assertTrue(foundUserBeforeDelete.isPresent());
+        assertTrue(isUserDeleted);
+        assertTrue(foundUserAfterDelete.isEmpty());
+    }
+
+    @Test
+    void shouldDeleteNotExistsUser() throws Exception{
+        // Given
+        int id = 8;
+
+        // When & Then
+        assertThrows(DAOException.class, () -> userDAO.deleteUser(id));
+    }
+
+    @Test
     void shouldUpdateUser() throws Exception{
         // Given
         User presavedUser = presaveUserInDB();
@@ -171,27 +196,13 @@ public class UserDAOImplTest {
     }
 
     @Test
-    void shouldDeleteUser() throws Exception{
+    void shouldUpdateNotExistsUser() throws Exception{
         // Given
         User presavedUser = presaveUserInDB();
-
-        // When
-        Optional<User> foundUserBeforeDelete = userDAO.findUserById(presavedUser.getId());
-        boolean isUserDeleted = userDAO.deleteUser(presavedUser.getId());
-        Optional<User> foundUserAfterDelete = userDAO.findUserById(presavedUser.getId());
-
-        // Then
-        assertTrue(foundUserBeforeDelete.isPresent());
-        assertTrue(isUserDeleted);
-        assertTrue(foundUserAfterDelete.isEmpty());
-    }
-
-    @Test
-    void shouldDeleteNotExistsUser() throws Exception{
-        // Given
-        int id = 8;
+        userDAO.deleteUser(presavedUser.getId());
 
         // When & Then
-        assertThrows(DAOException.class, () -> userDAO.deleteUser(id));
+        DAOException exception = assertThrows(DAOException.class, () -> userDAO.updateUser(presavedUser));
+        assertEquals("user not found", exception.getMessage());
     }
 }
