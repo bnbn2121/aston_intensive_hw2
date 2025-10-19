@@ -63,66 +63,66 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User saveUser(User user) throws DAOException {
-        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.persist(user);
-            transaction.commit();
-            logger.info("saving user in DB is success");
-            return user;
-        } catch (HibernateException e) {
-            if (transaction != null) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                session.persist(user);
+                transaction.commit();
+                logger.info("saving user in DB is success");
+                return user;
+            } catch (HibernateException e) {
                 transaction.rollback();
+                logger.error("error saving user in DB: {}", e.getMessage());
+                throw new DAOException("error saving user", e);
             }
-            logger.error("error saving user in DB");
-            throw new DAOException("error saving user", e);
         }
     }
 
     @Override
     public boolean updateUser(User user) throws DAOException {
-        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            User userFromDB = session.find(User.class, user.getId());
-            userFromDB.setName(user.getName());
-            userFromDB.setEmail(user.getEmail());
-            userFromDB.setAge(user.getAge());
-            transaction.commit();
-            logger.info("updating user in DB is success");
-            return true;
-        } catch (HibernateException e) {
-            if (transaction != null) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                User userFromDB = session.find(User.class, user.getId());
+                if (userFromDB == null) {
+                    transaction.rollback();
+                    logger.info("user is not founded in DB");
+                    throw new DAOException("user not found");
+                }
+                userFromDB.setName(user.getName());
+                userFromDB.setEmail(user.getEmail());
+                userFromDB.setAge(user.getAge());
+                transaction.commit();
+                logger.info("updating user in DB is success");
+                return true;
+            } catch (HibernateException e) {
                 transaction.rollback();
+                logger.error("error updating user in DB: {}", e.getMessage());
+                throw new DAOException("error updating user", e);
             }
-            logger.error("error updating user in DB");
-            throw new DAOException("error updating user", e);
         }
     }
 
     @Override
     public boolean deleteUser(int id) throws DAOException {
-        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-
-            User userFromDB = session.find(User.class, id);
-            if (userFromDB == null) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                User userFromDB = session.find(User.class, id);
+                if (userFromDB == null) {
+                    transaction.rollback();
+                    logger.info("user is not founded in DB");
+                    throw new DAOException("user not found");
+                }
+                session.remove(userFromDB);
+                transaction.commit();
+                logger.info("deleting user from DB is success");
+                return true;
+            } catch (HibernateException e) {
                 transaction.rollback();
-                logger.info("user is not founded in DB");
-                throw new DAOException("user not found");
+                logger.error("error deleting user from DB: {}", e.getMessage());
+                throw new DAOException("error deleting user", e);
             }
-
-            session.remove(userFromDB);
-            transaction.commit();
-            logger.info("deleting user from DB is success");
-            return true;
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            logger.error("error deleting user from DB");
-            throw new DAOException("error deleting user", e);
         }
     }
 }
