@@ -13,7 +13,4 @@ public class DAOException extends Exception {
         super(message, cause);
     }
 
-    public DAOException(Throwable cause) {
-        super(cause.getMessage(), cause);
-    }
 }

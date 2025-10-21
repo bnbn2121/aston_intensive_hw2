@@ -8,10 +8,6 @@ public class UserServiceException extends Exception {
         super(message);
     }
 
-    public UserServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public UserServiceException(Throwable cause) {
         super(cause.getMessage(), cause);
     }

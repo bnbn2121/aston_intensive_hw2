@@ -17,11 +17,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
+    private UserServiceImpl userService;
 
     @Mock
     private UserDAO userDAO;
-
-    private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
