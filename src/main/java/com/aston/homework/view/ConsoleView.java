@@ -1,5 +1,6 @@
 package com.aston.homework.view;
 
+import com.aston.homework.dao.util.HibernateUtil;
 import com.aston.homework.entity.User;
 import com.aston.homework.service.UserService;
 import com.aston.homework.service.UserServiceException;
@@ -8,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConsoleView {
-    private UserService userService;
+    private final UserService userService;
     private boolean isExit = false;
     private static final Logger logger = LoggerFactory.getLogger(ConsoleView.class);
 
@@ -21,6 +22,7 @@ public class ConsoleView {
         while (!isExit) {
             mainMenu();
         }
+        HibernateUtil.shutdown();
     }
 
     private void mainMenu() {
